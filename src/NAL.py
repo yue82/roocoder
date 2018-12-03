@@ -34,7 +34,7 @@ class NAL(object):
         return (header & 0b01100000) >> 5
 
     def __str__(self):
-        return '[{:>6}] IDC:{}, Unit type:{:>4}({:2}), RBSP len:{}'.format(
+        return '[{:>6}] IDC:{}, Unit type:{:>4}({:2}), RBSP len:{:>6}'.format(
             self.idx, self.ref_idc, self.unit_type_name, self.unit_type, len(self.rbsp))
 
 
@@ -43,5 +43,13 @@ class SPS(NAL):
         nal = super().__init__(header, rbsp)
         self.unit_type_name = 'SPS'
         self.profile_idc = self.rbsp[0]
-        self.constraint_set_flags = self.rbsp[1]
+        self.constraint_set_flags = self.rbsp[1] >> 2
         self.level_idc = self.rbsp[2]
+
+    def __str__(self):
+        sps_str = ' profile:{}, constraint_set_flag:{:0>6b}, level_idc:{}'.format(
+            self.profile_idc,
+            self.constraint_set_flags,
+            self.level_idc,
+            )
+        return super().__str__() + sps_str
